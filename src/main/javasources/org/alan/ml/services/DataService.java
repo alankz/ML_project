@@ -1,25 +1,54 @@
 package org.alan.ml.services;
 
-import org.alan.ml.dbConnection.HibernateUtil;
-import org.alan.ml.domain.Data;
-import org.hibernate.Session;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;;
+import javax.persistence.criteria.Root;
+
+import org.alan.ml.dbConnection.HibernateUtil;
+import org.alan.ml.domain.Data;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.Transaction;;
 
 public class DataService {
-	public List<Data> getDataTable(){
-		
-		Session session = HibernateUtil.openSession();
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<Data> query = builder.createQuery(Data.class);
-		Root<Data> dataRoot = query.from(Data.class);
-		query.select(dataRoot);
-		
-		return session.createQuery(query).getResultList();
-		
+
+	final static Logger logger = LogManager.getLogger(DataService.class);
+
+	public List<Data> getDataTable() {
+
+		try {
+			Session session = HibernateUtil.getCurrentSession();
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<Data> query = builder.createQuery(Data.class);
+			Root<Data> dataRoot = query.from(Data.class);
+			query.select(dataRoot);
+
+			return session.createQuery(query).getResultList();
+
+		} catch (Exception ex) {
+			logger.error("Failed to getDataTable: " + ex);
+			return new ArrayList<Data>();
+		}
+
 	}
+
+	public void importDataList(List<Data> dataList) throws Exception {
+
+		Session session = HibernateUtil.openSession();
+
+		try {
+			Transaction tx = session.beginTransaction();
+			dataList.forEach(data -> session.save(data));
+			tx.commit();
+		} finally {
+			session.close();
+		}
+
+	}
+	
+	
 }

@@ -8,7 +8,7 @@
 <title>Vist Data</title>
 </head>
 <body>
-        <h2>Vist Data</h2>
+        <h2>Test Vist Data</h2>
         <c:forEach var="data" items="${dataList}">
             <c:out value="${data}"/>
             <br />

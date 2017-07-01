@@ -24,6 +24,10 @@ public class DataKey implements Serializable{
 	@Column(name = "website", nullable = false)
 	private String website;
 	
+	public DataKey(){
+		
+	}
+	
 	public DataKey(Date date,String website){
 		super();
 		this.date = date;

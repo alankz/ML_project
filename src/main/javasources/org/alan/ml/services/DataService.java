@@ -23,6 +23,7 @@ public class DataService {
 
 		try {
 			Session session = HibernateUtil.getCurrentSession();
+			Transaction tx = session.beginTransaction();
 			CriteriaBuilder builder = session.getCriteriaBuilder();
 			CriteriaQuery<Data> query = builder.createQuery(Data.class);
 			Root<Data> dataRoot = query.from(Data.class);

@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Vist Data</title>
+<title>Test Vist Data</title>
 </head>
 <body>
         <h2>Test Vist Data</h2>

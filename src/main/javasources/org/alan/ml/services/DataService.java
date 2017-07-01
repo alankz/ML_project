@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -48,6 +49,23 @@ public class DataService {
 			session.close();
 		}
 
+	}
+	
+	public void clearDataTable() {
+
+		Session session = HibernateUtil.openSession();
+
+		try {
+			Transaction tx = session.beginTransaction();
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaDelete<Data> deleteQuery= builder.createCriteriaDelete(Data.class);
+			Root<Data> dataRoot = deleteQuery.from(Data.class);
+			int deletedRecords = session.createQuery(deleteQuery).executeUpdate();
+			tx.commit();
+			logger.info(deletedRecords + " numbers of records delete from Data table");
+		} finally {
+			session.close();
+		}
 	}
 	
 	

@@ -1,12 +1,15 @@
 package org.alan.ml.listener;
 
 import java.io.File;
+import java.util.List;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.alan.ml.domain.Data;
 import org.alan.ml.services.ConfigService;
+import org.alan.ml.services.DataService;
 import org.alan.ml.services.FileService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +26,8 @@ public class DataFileListener implements ServletContextListener {
 	private static final int dataFileCheckPeriod = ConfigService.getConfig().getInt("data.file.checkPeriod");
 
 	private static final int defaultDataFileCheckPeriod = 120000;
+	
+	private static final DataService dataService = new DataService();
 
 	Runnable dataFileDeamon = new Runnable() {
 
@@ -32,7 +37,13 @@ public class DataFileListener implements ServletContextListener {
 					logger.info("Checking data file...");
 					String filePath = ConfigService.getConfig().getString("data.file.path");
 					if (checkDataFileModified(filePath)) {
-						FileService.readDataFile(filePath);
+						List<Data> dataList = FileService.readDataFile(filePath);
+						try {
+							dataService.clearDataTable();
+							dataService.importDataList(dataList);
+						} catch (Exception ex) {
+							logger.error("Fail to import data list: " + ex);
+						}
 					}
 
 					if (dataFileCheckPeriod != 0) {

@@ -9,24 +9,24 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "VISIT_INFO")
-public class Data implements Serializable{
-    /**
+public class Data implements Serializable {
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4953495504443307826L;
 
 	@EmbeddedId
-    private DataKey dataKey;
-    
-    @Column(name = "visits")
-    private int visits;
+	private DataKey id;
 
-	public DataKey getDataKey() {
-		return dataKey;
+	@Column(name = "visits", nullable = false)
+	private int visits;
+
+	public DataKey getId() {
+		return id;
 	}
 
-	public void setDataKey(DataKey dataKey) {
-		this.dataKey = dataKey;
+	public void setId(DataKey id) {
+		this.id = id;
 	}
 
 	public int getVisits() {
@@ -39,7 +39,7 @@ public class Data implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Data [dataKey=" + dataKey + ", visits=" + visits + "]";
+		return "Data [id=" + id + ", visits=" + visits + "]";
 	}
-    
+
 }

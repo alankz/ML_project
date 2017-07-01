@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://ml-db.cfthzb6z9don.us-east-2.rds.amazonaws.com:3306/ML_DB</property>
+        <property name="hibernate.connection.username">ML</property>
+        <property name="hibernate.connection.password">Noiwoaggoir5</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="show_sql">true</property>
+        <mapping class="org.alan.ml.domain.Data"></mapping>
+        <mapping class="org.alan.ml.domain.DataKey"></mapping>
+    </session-factory>
+</hibernate-configuration>

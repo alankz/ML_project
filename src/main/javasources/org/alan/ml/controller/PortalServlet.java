@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alan.ml.domain.Data;
+import org.alan.ml.domain.ExclusionSite;
 import org.alan.ml.services.ConfigService;
 import org.alan.ml.services.DataService;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +47,7 @@ public class PortalServlet extends HttpServlet {
 		// response.sendRedirect("login.jsp");
 		// }
 		String queryDate = request.getParameter("queryDate");
-		if (queryDate.isEmpty()) {
+		if (queryDate == null) {
 			queryDate = defaultQueryDate;
 		}
 
@@ -55,6 +56,7 @@ public class PortalServlet extends HttpServlet {
 		logger.info("sessionId[" + sessionId + "],queryDate[" + queryDate + "]");
 		DataService dataService = new DataService();
 		List<Data> dataList = dataService.getDataTableOrderByVisit(queryDate, defaultPageRecords);
+		dataList = dataService.applyExclusionListOnDataList(dataList, ExclusionSite.getExclusionMap());
 
 		request.setAttribute("dataList", dataList);
 		request.setAttribute("queryDate", queryDate);

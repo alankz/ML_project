@@ -52,8 +52,14 @@ public class DataFileListener implements ServletContextListener {
 						Thread.sleep(defaultDataFileCheckPeriod);
 					}
 
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					logger.error("DataFileDeamon error: " + e);
+					try {
+						Thread.sleep(defaultDataFileCheckPeriod);
+					} catch (Exception ex) {
+						logger.error("DataFileDeamon error cannot sleep: " + ex);
+						active = false;
+					}
 				}
 			}
 		}

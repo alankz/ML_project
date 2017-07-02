@@ -4,6 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
@@ -16,6 +19,7 @@ import javax.persistence.criteria.Root;
 
 import org.alan.ml.dbConnection.HibernateUtil;
 import org.alan.ml.domain.Data;
+import org.alan.ml.domain.ExclusionSite;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -25,6 +29,21 @@ public class DataService {
 
 	final static Logger logger = LogManager.getLogger(DataService.class);
 
+	public List<Data> applyExclusionListOnDataList (List<Data> originDataList , Map<String, ExclusionSite> exclusionMap) {
+		Stream<Data> dataStream = originDataList.stream();
+		dataStream = dataStream.filter(data -> 
+											{
+												if (exclusionMap.containsKey(data.getId().getWebsite())){
+													return exclusionMap.get(data.getId().getWebsite()).validateDate(data.getId().getDate());
+												} else {
+													return true;
+												}
+											}
+									  );
+		
+		return dataStream.collect(Collectors.toList());
+	}
+
 	public List<Data> getDataTableOrderByVisit(String queryDateString, int numberOfRecords) {
 
 		try {
@@ -33,28 +52,29 @@ public class DataService {
 			CriteriaBuilder builder = session.getCriteriaBuilder();
 			CriteriaQuery<Data> query = builder.createQuery(Data.class);
 			Root<Data> dataRoot = query.from(Data.class);
-			
+
 			query.select(dataRoot);
 			query.orderBy(builder.desc(dataRoot.get("visits")));
-			
+
 			TypedQuery<Data> typedQuery;
-			
-			if (queryDateString!=null && !queryDateString.isEmpty()){
+
+			if (queryDateString != null && !queryDateString.isEmpty()) {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				Date queryDate = dateFormat.parse(queryDateString);
 				ParameterExpression<java.util.Date> parameter = builder.parameter(java.util.Date.class);
-				Predicate queryDatePredicate = builder.equal(dataRoot.get("id").get("date").as(java.sql.Date.class), parameter);
+				Predicate queryDatePredicate = builder.equal(dataRoot.get("id").get("date").as(java.sql.Date.class),
+						parameter);
 				query.where(queryDatePredicate);
 				typedQuery = session.createQuery(query);
-				typedQuery.setParameter(parameter, queryDate , TemporalType.DATE);
+				typedQuery.setParameter(parameter, queryDate, TemporalType.DATE);
 			} else {
 				typedQuery = session.createQuery(query);
 			}
-			
-			if (numberOfRecords!=0) {
+
+			if (numberOfRecords != 0) {
 				typedQuery = typedQuery.setMaxResults(numberOfRecords);
 			}
-				
+
 			return typedQuery.getResultList();
 
 		} catch (Exception ex) {
@@ -77,7 +97,7 @@ public class DataService {
 		}
 
 	}
-	
+
 	public void clearDataTable() {
 
 		Session session = HibernateUtil.openSession();
@@ -85,7 +105,7 @@ public class DataService {
 		try {
 			Transaction tx = session.beginTransaction();
 			CriteriaBuilder builder = session.getCriteriaBuilder();
-			CriteriaDelete<Data> deleteQuery= builder.createCriteriaDelete(Data.class);
+			CriteriaDelete<Data> deleteQuery = builder.createCriteriaDelete(Data.class);
 			Root<Data> dataRoot = deleteQuery.from(Data.class);
 			int deletedRecords = session.createQuery(deleteQuery).executeUpdate();
 			tx.commit();
@@ -94,6 +114,5 @@ public class DataService {
 			session.close();
 		}
 	}
-	
-	
+
 }

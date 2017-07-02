@@ -11,11 +11,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.alan.ml.domain.Data;
+import org.alan.ml.services.ConfigService;
 import org.alan.ml.services.DataService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @WebServlet(name = "PortalServlet", urlPatterns = { "/home" })
 public class PortalServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	final static Logger logger = LogManager.getLogger(PortalServlet.class);
+			
+	public static final int defaultPageRecords = ConfigService.getConfig().getInt("web.dataPage.pageRecords");			
 
 	public PortalServlet() {
 		super();
@@ -36,8 +43,11 @@ public class PortalServlet extends HttpServlet {
 		// else{
 		// response.sendRedirect("login.jsp");
 		// }
+		String queryDate = request.getParameter("queryDate");
+		String sessionId = request.getSession().getId();
+		logger.info("sessionId["+sessionId+"],queryDate["+queryDate+"]");
 		DataService dataService = new DataService();
-		List<Data> dataList = dataService.getDataTable();
+		List<Data> dataList = dataService.getDataTableOrderByVisit(queryDate,defaultPageRecords);
 		request.setAttribute("dataList", dataList);
 		RequestDispatcher view = request.getRequestDispatcher("dataTable.jsp");
 		view.forward(request, response);

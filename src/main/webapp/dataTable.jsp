@@ -29,7 +29,7 @@
 		</c:forEach>
 	</table>
 	<form name="myForm" action="/home" method="post">
-		<input name="queryDate" type="date" value="2016-01-06">
+		<input name="queryDate" type="date" value="${queryDate}">
 		<input type="submit">
 	</form>
 </body>

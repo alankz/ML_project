@@ -19,10 +19,12 @@ import org.apache.logging.log4j.Logger;
 @WebServlet(name = "PortalServlet", urlPatterns = { "/home" })
 public class PortalServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	final static Logger logger = LogManager.getLogger(PortalServlet.class);
-			
-	public static final int defaultPageRecords = ConfigService.getConfig().getInt("web.dataPage.pageRecords");			
+
+	public static final int defaultPageRecords = ConfigService.getConfig().getInt("web.dataPage.pageRecords");
+
+	public static final String defaultQueryDate = ConfigService.getConfig().getString("web.dataPage.queryDate");
 
 	public PortalServlet() {
 		super();
@@ -44,11 +46,19 @@ public class PortalServlet extends HttpServlet {
 		// response.sendRedirect("login.jsp");
 		// }
 		String queryDate = request.getParameter("queryDate");
+		if (queryDate.isEmpty()) {
+			queryDate = defaultQueryDate;
+		}
+
 		String sessionId = request.getSession().getId();
-		logger.info("sessionId["+sessionId+"],queryDate["+queryDate+"]");
+
+		logger.info("sessionId[" + sessionId + "],queryDate[" + queryDate + "]");
 		DataService dataService = new DataService();
-		List<Data> dataList = dataService.getDataTableOrderByVisit(queryDate,defaultPageRecords);
+		List<Data> dataList = dataService.getDataTableOrderByVisit(queryDate, defaultPageRecords);
+
 		request.setAttribute("dataList", dataList);
+		request.setAttribute("queryDate", queryDate);
+
 		RequestDispatcher view = request.getRequestDispatcher("dataTable.jsp");
 		view.forward(request, response);
 	}

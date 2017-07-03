@@ -4,7 +4,7 @@
   <groupId>org.alan.ml</groupId>
   <artifactId>mlproject</artifactId>
   <packaging>war</packaging>
-  <version>0.5.9.1</version>
+  <version>0.5.9.2</version>
   <name>archetype-web-app Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <repositories>

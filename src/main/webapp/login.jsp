@@ -9,7 +9,7 @@
 <body>
 	<center>
 		<div>
-			<form id="form" name="form" method="post" action="/">
+			<form id="form" name="form" method="post" action=".">
 				<h1>Login</h1>
 				<p>
 					Please enter your login information <br />New User? <a

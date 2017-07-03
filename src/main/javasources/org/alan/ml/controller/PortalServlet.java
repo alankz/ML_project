@@ -20,7 +20,7 @@ import org.alan.ml.services.LoginService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@WebServlet(name = "PortalServlet", urlPatterns = { "/home" })
+@WebServlet(name = "PortalServlet", urlPatterns = { "" })
 public class PortalServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

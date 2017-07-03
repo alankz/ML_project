@@ -34,7 +34,7 @@
 				</tr>
 			</c:forEach>
 		</table>
-		<form name="dataForm" action="/home" method="post">
+		<form name="dataForm" action="/" method="post">
 			<input name="queryDate" type="date" value="${queryDate}">
 			<input type="submit">
 		</form>

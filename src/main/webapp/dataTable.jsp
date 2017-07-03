@@ -8,29 +8,36 @@
 <title>Test Vist Data</title>
 </head>
 <body>
-	<h2>Test Vist Data</h2>
-	<table style="width: 500px">
-		<colgroup>
-			<col span="1" style="width: 33%;">
-			<col span="1" style="width: 33%;">
-			<col span="1" style="width: 33%;">
-		</colgroup>
-		<tr>
-			<td>Date</td>
-			<td>Website</td>
-			<td>Visits</td>
-		</tr>
-		<c:forEach var="data" items="${dataList}">
+	<center>
+		<c:choose>
+		    <c:when test="${admin}">
+		       <a href="/userManagement">User Management</a>
+		    </c:when>
+		</c:choose>
+		<h2>Test Vist Data</h2>
+		<table style="width: 500px">
+			<colgroup>
+				<col span="1" style="width: 33%;">
+				<col span="1" style="width: 33%;">
+				<col span="1" style="width: 33%;">
+			</colgroup>
 			<tr>
-				<td><c:out value="${data.id.date}" /></td>
-				<td><c:out value="${data.id.website}" /></td>
-				<td><c:out value="${data.visits}" /></td>
+				<td>Date</td>
+				<td>Website</td>
+				<td>Visits</td>
 			</tr>
-		</c:forEach>
-	</table>
-	<form name="myForm" action="/home" method="post">
-		<input name="queryDate" type="date" value="${queryDate}">
-		<input type="submit">
-	</form>
+			<c:forEach var="data" items="${dataList}">
+				<tr>
+					<td><c:out value="${data.id.date}" /></td>
+					<td><c:out value="${data.id.website}" /></td>
+					<td><c:out value="${data.visits}" /></td>
+				</tr>
+			</c:forEach>
+		</table>
+		<form name="dataForm" action="/home" method="post">
+			<input name="queryDate" type="date" value="${queryDate}">
+			<input type="submit">
+		</form>
+	</center>
 </body>
 </html>

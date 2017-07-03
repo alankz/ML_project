@@ -12,8 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.alan.ml.domain.Data;
 import org.alan.ml.domain.ExclusionSite;
+import org.alan.ml.domain.User;
+import org.alan.ml.domain.UserRole;
 import org.alan.ml.services.ConfigService;
 import org.alan.ml.services.DataService;
+import org.alan.ml.services.LoginService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,23 +32,57 @@ public class PortalServlet extends HttpServlet {
 
 	public PortalServlet() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// String userId = request.getParameter("userId");
-		// String password = request.getParameter("password");
-		// LoginService loginService = new LoginService();
-		// boolean result = loginService.authenticate(userId, password);
-		// User user = loginService.getUserByUserId(userId);
-		// if(result == true){
-		// request.getSession().setAttribute("user", user);
-		// response.sendRedirect("home.jsp");
-		// }
-		// else{
-		// response.sendRedirect("login.jsp");
-		// }
+		
+		 boolean authenticated = false;
+		 Object sessionUserRoleObject = request.getSession().getAttribute("userRole");
+		 String sessionUserRole = "";
+		 LoginService loginService = new LoginService();
+		 
+		 if (sessionUserRoleObject==null) {
+			 
+			 String userName = request.getParameter("userName");
+			 String password = request.getParameter("password");
+			 authenticated = loginService.authenticate(userName, password);
+			 if (authenticated) {
+				 User user = loginService.getUserByUserName(userName);
+				 if (user!=null) {
+					 request.getSession().setAttribute("userName", user.getUserName());
+					 request.getSession().setAttribute("userRole", user.getUserRole());
+				 }
+			 }
+			 
+		 } else {
+			 sessionUserRole = sessionUserRoleObject.toString();
+			 if(sessionUserRole.contentEquals(UserRole.ADMIN.getRole())||sessionUserRole.contentEquals(UserRole.USER.getRole())) {
+				 authenticated = true;
+			 }
+		 }
+	
+		 if(authenticated == true){
+			 
+			 processDataPage(request, response);
+			
+		 }
+		 else{
+			 response.sendRedirect("login.jsp");
+		 }
+
+	}
+	
+	protected void processDataPage(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String sessionUserRole = "";
+		
+		Object sessionUserRoleObject = request.getSession().getAttribute("userRole");
+		 if (sessionUserRoleObject!=null) {
+			 sessionUserRole  = sessionUserRoleObject.toString();
+		 }
+		
 		String queryDate = request.getParameter("queryDate");
 		if (queryDate == null) {
 			queryDate = defaultQueryDate;
@@ -60,6 +97,11 @@ public class PortalServlet extends HttpServlet {
 
 		request.setAttribute("dataList", dataList);
 		request.setAttribute("queryDate", queryDate);
+		
+		logger.info("PortalServlet: Session UserRole["+sessionUserRole+"]");
+		boolean adminRight = sessionUserRole.contentEquals(UserRole.ADMIN.getRole());
+		logger.info("PortalServlet: adminRight["+adminRight+"]");
+		request.setAttribute("admin", adminRight);
 
 		RequestDispatcher view = request.getRequestDispatcher("dataTable.jsp");
 		view.forward(request, response);

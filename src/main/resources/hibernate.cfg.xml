@@ -14,5 +14,6 @@
         <property name="show_sql">true</property>
         <mapping class="org.alan.ml.domain.Data"></mapping>
         <mapping class="org.alan.ml.domain.DataKey"></mapping>
+        <mapping class="org.alan.ml.domain.User"></mapping>
     </session-factory>
 </hibernate-configuration>

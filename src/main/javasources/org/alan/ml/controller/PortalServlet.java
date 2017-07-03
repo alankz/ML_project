@@ -22,7 +22,11 @@ import org.apache.logging.log4j.Logger;
 
 @WebServlet(name = "PortalServlet", urlPatterns = { "" })
 public class PortalServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6235866703670860360L;
 
 	final static Logger logger = LogManager.getLogger(PortalServlet.class);
 

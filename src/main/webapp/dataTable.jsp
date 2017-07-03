@@ -38,6 +38,9 @@
 			<input name="queryDate" type="date" value="${queryDate}">
 			<input type="submit">
 		</form>
+		<div>
+			<a href="logout.do">Logout</a>
+		</div>
 	</center>
 </body>
 </html>

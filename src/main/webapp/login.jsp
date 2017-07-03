@@ -19,13 +19,13 @@
 					<label> 
 						<span class="small">User ID: </span>
 					</label> 
-						<input type="text" name="userName" id="userName"/> 
+						<input type="text" name="userName" id="userName" min="8" max="30"/> 
 				</div>
 				<div>
 					<label>
-						<span class="small">Password (Minium 8 charactors): </span>
+						<span class="small">Password: </span>
 					</label> 
-					<input type="password" name="password" id="password" />
+					<input type="password" name="password" id="password" min="8" max="30"/>
 				</div>
 				<div>
 					<button type="submit">Sign-in</button>
